@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>প্রশ্ন যোগ করুন - Admin | Osmium</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#6b7280;
+      --brand:#e11d48;
+      --brand2:#7c3aed;
+      --brand3:#0ea5e9;
+      --line:#e5e7eb;
+      --radius:18px;
+      --shadow:0 10px 26px rgba(17,24,39,.10);
+      --shadow2:0 18px 40px rgba(17,24,39,.12);
+      --danger:#dc2626;
+      --success:#16a34a;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Hind Siliguri",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 18% -10%, rgba(225,29,72,.14), transparent 55%),
+        radial-gradient(900px 520px at 82% -10%, rgba(124,58,237,.14), transparent 55%),
+        radial-gradient(900px 520px at 50% 120%, rgba(14,165,233,.10), transparent 55%),
+        var(--bg);
+      padding-bottom:88px;
+    }
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1100px,94vw);margin:0 auto;padding:12px 0}
+
+    /* TOPBAR */
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      background:rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar-inner{
+      width:min(1100px,94vw);margin:0 auto;height:58px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:10px;font-weight:1000;
+    }
+    .logo-badge{
+      width:36px;height:36px;border-radius:12px;overflow:hidden;
+      border:1px solid var(--line);
+      box-shadow:0 10px 22px rgba(17,24,39,.10);
+      background:#fff;
+    }
+    .logo-badge img{width:100%;height:100%;object-fit:cover;display:block}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid var(--line);background:#fff;
+      font-size:12px;font-weight:900;color:var(--muted);
+      box-shadow:0 10px 22px rgba(17,24,39,.06);
+      white-space:nowrap;
+    }
+
+    /* LAYOUT */
+    .grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media(min-width:980px){
+      .grid{grid-template-columns:1fr 420px}
+    }
+
+    .card{
+      background:#fff;border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow2);
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::after{
+      content:"";
+      position:absolute; inset:-60% -25%;
+      background:
+        radial-gradient(340px 200px at 0% 0%, rgba(225,29,72,.12), transparent 60%),
+        radial-gradient(340px 200px at 100% 0%, rgba(124,58,237,.12), transparent 60%),
+        radial-gradient(320px 220px at 50% 130%, rgba(14,165,233,.10), transparent 62%);
+      pointer-events:none;
+    }
+    .wrap{position:relative;z-index:2}
+
+    h1{margin:0;font-size:18px;font-weight:1000}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px;font-weight:800;line-height:1.45}
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media(min-width:980px){
+      .row.two{grid-template-columns:1fr 1fr}
+    }
+
+    .field{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:10px 12px;
+      box-shadow:0 10px 22px rgba(17,24,39,.06);
+    }
+    .label{font-size:12px;font-weight:1000;color:var(--muted);margin-bottom:6px}
+    input, select, textarea{
+      width:100%;
+      border:none;outline:none;
+      font-family:inherit;
+      font-weight:900;
+      font-size:14px;
+      background:transparent;
+    }
+    textarea{min-height:92px;resize:vertical;font-weight:800}
+
+    .tabs{
+      display:flex;gap:8px;overflow:auto;scrollbar-width:none;
+      margin-top:12px;
+      padding-bottom:2px;
+    }
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:9px 12px;border-radius:999px;
+      font-size:13px;font-weight:1000;
+      cursor:pointer;white-space:nowrap;
+      box-shadow:0 10px 22px rgba(17,24,39,.06);
+    }
+    .tab.active{
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;border-color:transparent;
+      box-shadow:0 16px 32px rgba(225,29,72,.14);
+    }
+
+    /* MCQ OPTIONS */
+    .optgrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      margin-top:8px;
+    }
+    .opt{
+      display:flex;gap:10px;align-items:center;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px;
+      background:#fff;
+      box-shadow:0 10px 22px rgba(17,24,39,.06);
+    }
+    .opt .key{
+      width:34px;height:34px;border-radius:12px;
+      display:grid;place-items:center;
+      font-weight:1000;
+      background:#f3f4f6;
+      border:1px solid var(--line);
+      flex:0 0 auto;
+    }
+    .opt input[type="text"]{
+      font-weight:900;
+    }
+    .radio{
+      display:flex;gap:8px;align-items:center;
+      padding:9px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:0 10px 22px rgba(17,24,39,.06);
+      margin-top:10px;
+      width:fit-content;
+    }
+    .radio input{width:auto}
+
+    /* ACTIONS */
+    .actions{
+      margin-top:12px;
+      display:flex;gap:10px;flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .btn{
+      border:none;cursor:pointer;
+      padding:11px 14px;border-radius:999px;
+      font-weight:1000;font-size:14px;
+      background:#fff;border:1px solid var(--line);
+    }
+    .btn.primary{
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;border:none;
+      box-shadow:0 16px 34px rgba(225,29,72,.18);
+    }
+    .btn.dark{background:#111827;color:#fff;border:none}
+    .btn.danger{
+      background:rgba(220,38,38,.10);
+      border:1px solid rgba(220,38,38,.22);
+      color:var(--danger);
+    }
+
+    /* LIST */
+    .list{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .qitem{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:12px;
+      box-shadow:var(--shadow);
+    }
+    .qtop{
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;
+    }
+    .qbadge{
+      font-size:11px;font-weight:1000;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      white-space:nowrap;
+    }
+    .qbadge.mcq{border-color:rgba(14,165,233,.22);background:rgba(14,165,233,.10);color:#075985}
+    .qbadge.cq{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.12);color:#92400e}
+
+    .qtitle{
+      font-weight:1000;
+      font-size:13px;
+      line-height:1.35;
+      margin-top:8px;
+    }
+    .qmeta{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:800;
+      font-size:12px;
+    }
+    .qactions{
+      margin-top:10px;
+      display:flex;gap:8px;flex-wrap:wrap;
+    }
+    .small{
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:1000;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+    }
+    .small.danger{
+      background:rgba(220,38,38,.10);
+      border-color:rgba(220,38,38,.22);
+      color:var(--danger);
+    }
+
+    .empty{
+      margin-top:12px;
+      background:#fff;
+      border:1px dashed var(--line);
+      border-radius:20px;
+      padding:22px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:1000;
+      box-shadow:var(--shadow);
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="admin_dashboard.html">
+      <div class="logo-badge">
+        <img src="https://i.postimg.cc/fbQYCWT3/FB_IMG_1765082194864.jpg" alt="Osmium">
+      </div>
+      <span>Osmium Admin</span>
+    </a>
+    <div class="pill">🧑‍🏫 Question Builder</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="grid">
+
+    <!-- LEFT: Builder -->
+    <section class="card">
+      <div class="wrap">
+        <h1>প্রশ্ন যোগ করুন</h1>
+        <div class="sub">MCQ অথবা CQ প্রশ্ন তৈরি করে নিচের তালিকায় যুক্ত করুন। (Frontend Demo)</div>
+
+        <div class="row two">
+          <div class="field">
+            <div class="label">Exam Name</div>
+            <input id="examName" value="Practice Test 01 (Math)" />
+          </div>
+          <div class="field">
+            <div class="label">Marks</div>
+            <input id="marks" type="number" min="0" value="1" />
+          </div>
+        </div>
+
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-type="mcq">MCQ</button>
+          <button class="tab" data-type="cq">CQ</button>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <div class="label">Question Title</div>
+            <textarea id="qText" placeholder="প্রশ্ন লিখুন..."></textarea>
+          </div>
+        </div>
+
+        <!-- MCQ Fields -->
+        <div id="mcqFields">
+          <div class="optgrid">
+            <div class="opt">
+              <div class="key">A</div>
+              <input id="optA" type="text" placeholder="Option A">
+            </div>
+            <div class="opt">
+              <div class="key">B</div>
+              <input id="optB" type="text" placeholder="Option B">
+            </div>
+            <div class="opt">
+              <div class="key">C</div>
+              <input id="optC" type="text" placeholder="Option C">
+            </div>
+            <div class="opt">
+              <div class="key">D</div>
+              <input id="optD" type="text" placeholder="Option D">
+            </div>
+          </div>
+
+          <div class="radio">
+            <span style="font-weight:1000;color:var(--muted);font-size:12px">Correct:</span>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:1000"><input type="radio" name="correct" value="A" checked> A</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:1000"><input type="radio" name="correct" value="B"> B</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:1000"><input type="radio" name="correct" value="C"> C</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:1000"><input type="radio" name="correct" value="D"> D</label>
+          </div>
+        </div>
+
+        <!-- CQ Fields -->
+        <div id="cqFields" style="display:none;">
+          <div class="row two">
+            <div class="field">
+              <div class="label">Answer Type</div>
+              <select id="cqAnswerType">
+               <option value="text">Text Answer (Optional)</option>
+                <option value="upload" selected>Upload Required</option>
+               
+              </select>
+            </div>
+            <div class="field">
+              <div class="label">Instruction</div>
+              <input id="cqInst" value="ছবি/PDF আপলোড করুন" />
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" onclick="resetForm()">Reset</button>
+          <button class="btn primary" onclick="addQuestion()">➕ Add Question</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT: List -->
+    <aside class="card">
+      <div class="wrap">
+        <h1>প্রশ্ন তালিকা</h1>
+        <div class="sub">এখানে যোগ হওয়া প্রশ্নগুলো দেখাবে। (Frontend Demo)</div>
+
+        <div class="list" id="list"></div>
+        <div class="empty" id="empty">এখনো কোনো প্রশ্ন যোগ হয়নি।</div>
+      </div>
+    </aside>
+
+  </div>
+
+</main>
+
+<script>
+  let mode = "mcq";
+  let questions = [];
+  let editId = null;
+
+  const tabs = document.getElementById("tabs");
+  const mcqFields = document.getElementById("mcqFields");
+  const cqFields = document.getElementById("cqFields");
+
+  const qText = document.getElementById("qText");
+  const marks = document.getElementById("marks");
+
+  const optA = document.getElementById("optA");
+  const optB = document.getElementById("optB");
+  const optC = document.getElementById("optC");
+  const optD = document.getElementById("optD");
+
+  const cqAnswerType = document.getElementById("cqAnswerType");
+  const cqInst = document.getElementById("cqInst");
+
+  function setMode(m){
+    mode = m;
+    [...tabs.querySelectorAll(".tab")].forEach(b=>{
+      b.classList.toggle("active", b.dataset.type === m);
+    });
+
+    if(m === "mcq"){
+      mcqFields.style.display = "";
+      cqFields.style.display = "none";
+    }else{
+      mcqFields.style.display = "none";
+      cqFields.style.display = "";
+    }
+  }
+
+  tabs.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".tab");
+    if(!btn) return;
+    setMode(btn.dataset.type);
+  });
+
+  function getCorrect(){
+    const r = document.querySelector('input[name="correct"]:checked');
+    return r ? r.value : "A";
+  }
+
+  function resetForm(){
+    editId = null;
+    qText.value = "";
+    marks.value = "1";
+
+    optA.value = ""; optB.value = ""; optC.value = ""; optD.value = "";
+    document.querySelector('input[name="correct"][value="A"]').checked = true;
+
+    cqAnswerType.value = "upload";
+    cqInst.value = "ছবি/PDF আপলোড করুন";
+
+    setMode("mcq");
+  }
+
+  function addQuestion(){
+    const text = qText.value.trim();
+    const mk = Number(marks.value || 0);
+
+    if(!text){
+      alert("Question Title লিখুন");
+      return;
+    }
+
+    let payload = { id: editId || Date.now(), type: mode, text, marks: mk };
+
+    if(mode === "mcq"){
+      const A = optA.value.trim(), B = optB.value.trim(), C = optC.value.trim(), D = optD.value.trim();
+      if(!A || !B || !C || !D){
+        alert("MCQ এর সব option পূরণ করুন");
+        return;
+      }
+      payload.options = {A,B,C,D};
+      payload.correct = getCorrect();
+    }else{
+      payload.answerType = cqAnswerType.value;
+      payload.instruction = cqInst.value.trim() || "Upload Required";
+    }
+
+    if(editId){
+      questions = questions.map(q => q.id === editId ? payload : q);
+    }else{
+      questions.unshift(payload);
+    }
+
+    resetForm();
+    render();
+  }
+
+  function editQuestion(id){
+    const q = questions.find(x=>x.id===id);
+    if(!q) return;
+
+    editId = id;
+    qText.value = q.text;
+    marks.value = q.marks ?? 1;
+
+    if(q.type === "mcq"){
+      setMode("mcq");
+      optA.value = q.options.A; optB.value = q.options.B; optC.value = q.options.C; optD.value = q.options.D;
+      document.querySelector(`input[name="correct"][value="${q.correct}"]`).checked = true;
+    }else{
+      setMode("cq");
+      cqAnswerType.value = q.answerType || "upload";
+      cqInst.value = q.instruction || "";
+    }
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  function deleteQuestion(id){
+    if(!confirm("Delete করবেন?")) return;
+    questions = questions.filter(x=>x.id!==id);
+    if(editId === id) resetForm();
+    render();
+  }
+
+  function render(){
+    const list = document.getElementById("list");
+    const empty = document.getElementById("empty");
+
+    if(!questions.length){
+      list.innerHTML = "";
+      empty.style.display = "block";
+      return;
+    }
+    empty.style.display = "none";
+
+    list.innerHTML = questions.map((q, idx)=>`
+      <div class="qitem">
+        <div class="qtop">
+          <div class="qbadge ${q.type}">${q.type.toUpperCase()} • ${q.marks} marks</div>
+          <div class="qbadge" style="background:#f3f4f6">#${questions.length-idx}</div>
+        </div>
+
+        <div class="qtitle">${escapeHtml(q.text)}</div>
+
+        <div class="qmeta">
+          ${
+            q.type === "mcq"
+              ? `Correct: <b>${q.correct}</b>`
+              : `Answer: <b>${escapeHtml(q.answerType)}</b> • ${escapeHtml(q.instruction || "")}`
+          }
+        </div>
+
+        <div class="qactions">
+          <button class="small" onclick="editQuestion(${q.id})">Edit</button>
+          <button class="small danger" onclick="deleteQuestion(${q.id})">Delete</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  // init
+  render();
+</script>
+
+</body>
+</html>
